@@ -1,4 +1,3 @@
-
 package com.domain.service;
 
 import com.app.dto.LoginDTO;
@@ -18,24 +17,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthService implements IAuthService{
-    
-    private final IAuthRepository iAuthRepository;    
+public class AuthService implements IAuthService {
+
+    private final IAuthRepository iAuthRepository;
     private final PasswordEncoder passwordEncoder;
     private final IJWT iJWT;
-    
+
     @Autowired
-    public AuthService(IAuthRepository iAuthRepository, PasswordEncoder passwordEncoder,IJWT iJWT) {
+    public AuthService(IAuthRepository iAuthRepository, PasswordEncoder passwordEncoder, IJWT iJWT) {
         this.iAuthRepository = iAuthRepository;
         this.passwordEncoder = passwordEncoder;
         this.iJWT = iJWT;
     }
-    
+
     @Override
-    public ResponseEntity registro(RegisterDTO registerDTO) {
+    public ResponseEntity register(RegisterDTO registerDTO) {
         User user = new User(
-                registerDTO.getName(), 
-                registerDTO.getFirstName(), 
+                registerDTO.getName(),
+                registerDTO.getFirstName(),
                 registerDTO.getPhone()
         );
         user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
@@ -44,21 +43,20 @@ public class AuthService implements IAuthService{
         ResponseEntity<User> response = iAuthRepository.register(user);
         String token = iJWT.getToken(response.getBody());
         ResponseAuth responseAuth = new ResponseAuth(token, response.getBody());
-        System.out.println(token);
         return new ResponseEntity(responseAuth, response.getStatusCode());
     }
 
     @Override
     public ResponseEntity login(LoginDTO loginDTO) {
-//        try {
-//            
-//        } catch (Exception e) {
-//        }
         String email = loginDTO.getEmail();
         String password = loginDTO.getPassword();
         ResponseEntity<Authentication> response = iAuthRepository.login(email, password);
+
+        if (response.getBody() == null) {
+            return response;
+        }
+
         User user = (User) response.getBody().getPrincipal();
-//        System.out.println(user.getEmail());
         String token = iJWT.getToken(user);
         return new ResponseEntity(token, HttpStatus.OK);
     }

@@ -29,14 +29,22 @@ public class ImpAuth implements IAuthRepository{
 
     @Override
     public ResponseEntity register(User user) {
+        try {
+            User userResponse = iAuthORM.save(user);
+            return new ResponseEntity(
+                    userResponse, 
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(
+                    "client not found"+ e.getMessage(),
+                    HttpStatus.OK);
+        }
         
-        User userResponse = iAuthORM.save(user);
-        return new ResponseEntity(userResponse, HttpStatus.OK);
+        
     }
 
     @Override
     public ResponseEntity login(String email, String password) {
-        System.out.println(email + password); 
         try {
             Authentication authenticationToken = this.authenticationManager(email, password);
             return new ResponseEntity(authenticationToken, HttpStatus.OK);
