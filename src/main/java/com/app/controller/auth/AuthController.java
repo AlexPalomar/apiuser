@@ -1,4 +1,3 @@
-
 package com.app.controller.auth;
 
 import com.app.dto.LoginDTO;
@@ -15,26 +14,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final IAuthService iAuthService;
-    
+    private final IAuthService authService;
+
     @Autowired
-    public AuthController(IAuthService iAuthService){
-        this.iAuthService = iAuthService;
+    public AuthController(IAuthService authService) {
+        this.authService = authService;
     }
-    
-    
-    @PostMapping("/registro")
-    public ResponseEntity createUser(@RequestBody RegisterDTO registerDTO){
-        ResponseEntity response = iAuthService.registro(registerDTO);
+
+    @PostMapping("/register")
+    public ResponseEntity createUser(@RequestBody RegisterDTO registerDTO) {
+        ResponseEntity response = authService.register(registerDTO);
         return response;
-         
+
     }
-    
+
     @PostMapping("/login")
-    public ResponseEntity Login(@RequestBody LoginDTO loginDTO){
-         
-        ResponseEntity response = iAuthService.login(loginDTO);
+    public ResponseEntity login(@RequestBody LoginDTO loginDTO) {
+        ResponseEntity response = authService.login(loginDTO);
         return response;
     }
-    
+
 }
