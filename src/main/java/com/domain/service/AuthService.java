@@ -57,7 +57,6 @@ public class AuthService implements IAuthService {
         }
 
         User user = (User) response.getBody().getPrincipal();
-        System.out.println(user.getEmail() + "*");
         String token = iJWT.getToken(user);
         return new ResponseEntity(token, HttpStatus.OK);
     }
